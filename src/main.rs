@@ -12,7 +12,7 @@ fn index() -> &'static str{
 }
 
 #[get("/<region>/<username>")]
-async fn userProfile(region: &str, username: &str) -> String{
+async fn user_profile(region: &str, username: &str) -> String{
 
     format!("Region: {}\nUsername: {}", region, username);
     let riot_api: String = (env::var("RIOT_API").unwrap()).replace('"', "");
