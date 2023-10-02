@@ -1,4 +1,4 @@
-
+use std::env;
 
 #[macro_use] extern crate rocket;
 
@@ -7,9 +7,14 @@ fn index() -> &'static str{
     "Hello, World!"
 }
 
-#[launch]
-fn rocket() -> _ {
-    rocket::build().mount("/", routes![index])
+#[get("/<region>/<username>")]
+fn userProfile(region: &str, username: &str) -> String{
+    format!("Region: {}\nUsername: {}", region, username)
 }
 
-fn main() {}
+#[launch]
+fn rocket() -> _ {
+    rocket::build()
+        .mount("/", routes![index])
+        .mount("/search/", routes![userProfile])
+}
