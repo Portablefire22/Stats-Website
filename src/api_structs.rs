@@ -12,6 +12,7 @@ pub struct SummonerInfo {
     pub summoner_level: i64,
 }
 
+#[derive(Debug)]
 pub struct Summoner {
     pub summoner_info: SummonerInfo,
     pub region: String,

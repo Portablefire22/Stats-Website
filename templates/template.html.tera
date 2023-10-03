@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+    <meta charset="UTF-8">
+    <title>{% block title %}KittyGoesMeow{% endblock title %}</title>
+    <link rel="stylesheet" href="css/style.css">
+    {% endblock head %}
+</head>
+<body>
+    {% block body %}
+    {% endblock body %}
+    <div class="footer">
+        {% block footer %}
+        <p>KittyGoesMeow isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.</p>
+        {% endblock footer %}
+    </div>
+</body>
+</html>

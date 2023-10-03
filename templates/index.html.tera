@@ -1,0 +1,33 @@
+{% extends "template" %}
+{% block body %}
+<div class="title">
+    <h1>KittyGoesMeow</h1>
+    <a href="https://github.com/Portablefire22/Stats-Website"><img width="48px" height="49px" src="public/github.svg" alt="Github Logo"/></a>
+</div>
+
+<div class="content">
+    <div class="landing_search">
+        <form action="/search" method="POST" class="hide-submit">
+            <select name="region" id="region">
+                <option selected="selected" value="EUW1">EUW</option>
+                <option value="EUN1">EUNE</option>
+                <option value="NA1">NA</option>
+                <option value="KR">KR</option>
+                <option value="BR1">BR</option>
+                <option value="JP1">JP</option>
+                <option value="RU">RU</option>
+                <option value="OC1">OCE</option>
+                <option value="TR1">TR</option>
+                <option value="LA1">LAN</option>
+                <option value="LA2">LAS</option>
+                <option value="PH2">PH</option>
+                <option value="SG2">SG</option>
+                <option value="TH2">TH</option>
+                <option value="TW2">TW</option>
+                <option value="VN2">VN</option>
+            </select>
+            <input type="text" id="username" name="username" placeholder="Summoner Name">
+        </form>
+    </div>
+</div>
+{% endblock body %}
