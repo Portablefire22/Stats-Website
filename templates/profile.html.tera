@@ -1,0 +1,17 @@
+{% extends "template" %}
+{% block body %}
+
+<div>
+    <div class="profile-header">
+        <div class="header-content">
+            <h1>{{summoner.summoner_info.name}}</h1>
+            <div class="profile-icon">
+
+            </div>
+        </div>
+    </div>
+    <div class="profile-content-container">
+
+    </div>
+</div>
+{% endblock body %}

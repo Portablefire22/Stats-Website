@@ -81,6 +81,31 @@ form.hide-submit input[type="submit"] {display: none;}
     text-align: center;
 }
 
+.profile-content-container{
+    background-color: cyan;
+    width: 1080px;
+    margin: 0px auto;
+}
+
+.profile-header{
+    background-color: #f7f7f7;
+}
+
+.header-content{
+    padding: 10px 10px 16px 0px;
+    display: flex;
+    flex: 1 1 0%;
+    box-sizing: border-box;
+}
+
+.profile-icon{
+    background-color: black;
+    margin-top: 32px;
+    position: relative;
+    width: 100px;
+    height: 100px;
+    flex-basis: 100px;
+}
 
 /* Colours
 Main #301A4B

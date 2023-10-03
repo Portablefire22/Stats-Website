@@ -2,14 +2,14 @@
 {% block body %}
 <div class="title">
     <h1>KittyGoesMeow</h1>
-    <a href="https://github.com/Portablefire22/Stats-Website"><img width="48px" height="49px" src="public/github.svg" alt="Github Logo"/></a>
+    <a href="https://github.com/Portablefire22/Stats-Website"><img width="48px" height="49px" src="/public/github.svg" alt="Github Logo"/></a>
 </div>
 
 <div class="content">
     <div class="landing_search">
         <form action="/search" method="POST" class="hide-submit">
             <select name="region" id="region">
-                <option selected="selected" value="EUW1">EUW</option>
+                <option selected="selected" value="euw1">EUW</option>
                 <option value="EUN1">EUNE</option>
                 <option value="NA1">NA</option>
                 <option value="KR">KR</option>
@@ -26,7 +26,7 @@
                 <option value="TW2">TW</option>
                 <option value="VN2">VN</option>
             </select>
-            <input type="text" id="username" name="username" placeholder="Summoner Name">
+            <input type="text" id="username" name="username" autocomplete="off" placeholder="Summoner Name">
         </form>
     </div>
 </div>

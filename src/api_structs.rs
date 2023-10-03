@@ -12,7 +12,7 @@ pub struct SummonerInfo {
     pub summoner_level: i64,
 }
 
-#[derive(Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Summoner {
     pub summoner_info: SummonerInfo,
     pub region: String,
