@@ -17,6 +17,7 @@ pub struct SummonerInfo {
 pub struct Summoner {
     pub summoner_info: SummonerInfo,
     pub region: String,
+    pub routing_region: String,
     pub ranked_info: SummonerRanked,
     pub debug_status: u16,
 }
