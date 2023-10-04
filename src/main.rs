@@ -20,7 +20,8 @@ use rocket_dyn_templates::{Template, tera::Tera, context};
 #[get("/<region>/<username>")]
 async fn user_profile(region: &str, username: &str) -> Template {
     let local_summoner: api_structs::Summoner = summoner_controller::get_summoner(region, username).await;
-    Template::render("profile", context! {summoner: &local_summoner})
+    println!("{:#?}", &local_summoner.summoner_info.profile_icon_id);
+    Template::render("profile", context! {summoner: &local_summoner, profile_icon: &local_summoner.summoner_info.profile_icon_id, summoner_level: &local_summoner.summoner_info.summoner_level})
 }
 
 #[derive(FromForm)]
@@ -55,6 +56,10 @@ fn index() -> Template {
     Template::render("index", context! {test_value: "Testing"})
 }
 
+#[get("/datadragon/<file_path>")]
+async fn datadragon(file_path: &str) -> Option<NamedFile> {
+    NamedFile::open(format!("datadragon/{}", file_path)).await.ok()
+}
 
 #[get("/style.css")]
 async fn stylesheet() -> Option<NamedFile> {

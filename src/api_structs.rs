@@ -16,6 +16,7 @@ pub struct SummonerInfo {
 pub struct Summoner {
     pub summoner_info: SummonerInfo,
     pub region: String,
+    pub ranked_info: SummonerRanked,
 }
 pub type SummonerRanked = Vec<SummonerRankedElement>;
 
