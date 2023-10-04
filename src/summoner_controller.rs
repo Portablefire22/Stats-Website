@@ -3,9 +3,10 @@ use reqwest::StatusCode;
 use serde_json::from_str;
 use crate::api_structs;
 use crate::api_structs::Summoner;
+use crate::game_controller::get_match_details;
 
 // Get the summoner information
-pub(crate) async fn get_summoner(region: &str, username: &str) -> api_structs::Summoner {
+pub(crate) async fn get_summoner(region: &str, username: &str) -> Summoner {
     let riot_api: String = (env::var("RIOT_API").unwrap()).replace('"', "");
 
     let safe_username: String = username.replace(" ", "%20");
@@ -14,8 +15,8 @@ pub(crate) async fn get_summoner(region: &str, username: &str) -> api_structs::S
     let status :StatusCode = resp.status();
     if status == 200 {
         let resp: String = resp.text().await.expect("Could not parse");
-        let mut local_summoner_info: api_structs::SummonerInfo = serde_json::from_str(&resp).unwrap();
-        let mut local_summoner = api_structs::Summoner {
+        let mut local_summoner_info: api_structs::SummonerInfo = from_str(&resp).unwrap();
+        let mut local_summoner = Summoner {
             summoner_info: local_summoner_info,
             region: region.parse().unwrap(),
             routing_region: match &*(region).to_uppercase() { // Some api calls require a routing region and not just the summoner's server
@@ -29,11 +30,11 @@ pub(crate) async fn get_summoner(region: &str, username: &str) -> api_structs::S
             debug_status: u16::from(status),
         };
         local_summoner.ranked_info = get_ranked_information(&local_summoner).await;
-        get_match_history(&local_summoner, 0, 20).await; // testing
+        get_match_details(&local_summoner, &get_match_history(&local_summoner, 0, 20).await).await; // testing
         println!("{:#?}", &local_summoner);
         return local_summoner;
     }
-    let mut default_summoner: api_structs::Summoner = api_structs::Summoner::default();
+    let mut default_summoner: Summoner = api_structs::Summoner::default();
     default_summoner.debug_status = u16::from(status);
     return default_summoner;
 }
@@ -41,18 +42,17 @@ pub(crate) async fn get_summoner(region: &str, username: &str) -> api_structs::S
 
 
 // Return the ranked information of a given summoner
-pub(crate) async fn get_ranked_information(local_summoner: &api_structs::Summoner) -> api_structs::SummonerRanked{
+pub(crate) async fn get_ranked_information(local_summoner: &Summoner) -> api_structs::SummonerRanked{
     let riot_api: String = (env::var("RIOT_API").unwrap()).replace('"', "");
     let request_url: String = format!("https://{}.api.riotgames.com/lol/league/v4/entries/by-summoner/{}?api_key={}",local_summoner.region, local_summoner.summoner_info.id, riot_api);
     let mut resp = reqwest::get(request_url).await.expect("Failed to get a response");
     let resp = resp.text().await.expect("Could not parse");
-    let local_summoner_ranked: api_structs::SummonerRanked = serde_json::from_str(&resp).unwrap();
+    let local_summoner_ranked: api_structs::SummonerRanked = from_str(&resp).unwrap();
     local_summoner_ranked
 }
 
 // Get the specified number of match ids starting from a specified index.
-pub(crate) async fn get_match_history(local_summoner: &api_structs::Summoner, start_index: u8, count: u8) -> Vec<String> {
-
+pub(crate) async fn get_match_history(local_summoner: &Summoner, start_index: u8, count: u8) -> Vec<String> {
     let riot_api: String = (env::var("RIOT_API").unwrap()).replace('"', "");
     let request_url: String = format!("https://{}.api.riotgames.com/lol/match/v5/matches/by-puuid/{}/ids?start={}&count={}&api_key={}", local_summoner.routing_region, local_summoner.summoner_info.puuid, start_index, count, riot_api);
     let resp = reqwest::get(request_url).await.expect("Failed to get a response");

@@ -11,6 +11,8 @@ use serde::{Deserialize, Serialize};
 mod api_structs;
 mod summoner_controller;
 mod game_controller;
+mod match_structs;
+
 #[macro_use] extern crate rocket;
 use rocket_dyn_templates::{Template, tera::Tera, context};
 
