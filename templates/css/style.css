@@ -84,6 +84,7 @@ form.hide-submit input[type="submit"] {display: none;}
 .profile-content-container{
     width: 1080px;
     margin: 0px auto;
+    padding-top: 12px;
 }
 
 .profile-header{
@@ -132,6 +133,50 @@ form.hide-submit input[type="submit"] {display: none;}
 .profile-text {
     margin-left: 10px;
     line-height: 10px;
+}
+
+.match-history{
+    background-color: #fff;
+    width: 100%;
+    padding: 12px 0px 12px 0px;
+    border-radius: 12px;
+}
+
+.match-container {
+    height: 100px;
+    background-color: #f7f7f8;
+    margin: 0px 12px 6px 12px;
+    align-items: center;
+    display: flex;
+    border-radius: 12px;
+}
+
+.champion-icon {
+    margin-left: 12px;
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px 12px 12px 0px;
+}
+
+.champion-icon img {
+    border-radius: 12px;
+    display: block;
+    width: 64px;
+    height: 64px;
+    transform: scale(1.15);
+}
+
+.champion-icon .champion-level {
+    position: absolute;
+    background-color: lightgrey;
+    color: black;
+    bottom: 0;
+    padding: 3px 3px;
+    text-align: center;
+    border-radius: 0px 3px 0px 1px;
+    filter: drop-shadow(0px 2px 2px );
+    font-size: 12px;
 }
 
 /* Colours

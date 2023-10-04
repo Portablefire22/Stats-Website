@@ -20,7 +20,30 @@
         </div>
     </div>
     <div class="profile-content-container">
+        <div class="match-history">
+            {% for match in match_history %}
+                <div class="match-container">
+                    <div class="match-content-container">
+                        <div class="game-details">
+                            <div class="champion-icon">
+                                <img src="/public/datadragon/13.19.1/img/champion/{{match.info.participants[0].championName}}.png"/>
+                                <label class="champion-level">{{match.info.participants[0].champLevel}}</label>
+                            </div>
+                        </div>
+                        <div class="champion-details">
 
+                        </div>
+                        <div class="items">
+
+                        </div>
+                        <div class="participants">
+
+                        </div>
+                    </div>
+                    {{ match.info.participants[0].summonerName }}
+                </div>
+            {% endfor %}
+        </div>
     </div>
 </div>
 {% endblock body %}

@@ -15,6 +15,8 @@ mod match_structs;
 
 #[macro_use] extern crate rocket;
 use rocket_dyn_templates::{Template, tera::Tera, context};
+use crate::game_controller::get_matches;
+use crate::summoner_controller::get_match_history;
 
 
 // ------- Summoner Searching
@@ -23,9 +25,14 @@ use rocket_dyn_templates::{Template, tera::Tera, context};
 // Get a Summoner from a given username and region
 #[get("/<region>/<username>")]
 async fn user_profile(region: &str, username: &str) -> Template {
-    let local_summoner: api_structs::Summoner = summoner_controller::get_summoner(region, username).await;
+    let local_summoner: api_structs::Summoner = summoner_controller::get_summoner_by_username(region, username).await;
     println!("{:#?}", &local_summoner.summoner_info.profile_icon_id);
-    Template::render("profile", context! {summoner: &local_summoner, profile_icon: &local_summoner.summoner_info.profile_icon_id, summoner_level: &local_summoner.summoner_info.summoner_level})
+    Template::render("profile", context! {
+        summoner: &local_summoner,
+        profile_icon: &local_summoner.summoner_info.profile_icon_id,
+        summoner_level: &local_summoner.summoner_info.summoner_level,
+        match_history: get_matches(&local_summoner, get_match_history(&local_summoner, 0, 9).await).await
+    })
 }
 
 #[derive(FromForm)]
