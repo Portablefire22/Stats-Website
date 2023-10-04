@@ -3,6 +3,7 @@ use std::path::{Path, PathBuf};
 use dotenvy::dotenv;
 use rocket::fs::{FileServer, NamedFile};
 use rocket::response::Redirect;
+use rocket::uri;
 
 use syn;
 use serde::{Deserialize, Serialize};
@@ -31,7 +32,8 @@ struct SearchSummoner {
 }
 #[post("/", data="<summoner_info>")]
 async fn search_input(summoner_info: rocket::form::Form<SearchSummoner>) -> Redirect {
-    let url: String = format!("/search/{}/{}", summoner_info.region, summoner_info.username);
+    let safe_username: String = summoner_info.username.replace(" ", "%20");
+    let url: String = format!("/search/{}/{}", summoner_info.region, safe_username);
     Redirect::to(url)
 }
 

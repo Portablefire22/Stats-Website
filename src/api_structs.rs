@@ -1,6 +1,7 @@
+use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct SummonerInfo {
     pub id: String,
@@ -12,15 +13,17 @@ pub struct SummonerInfo {
     pub summoner_level: i64,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Default)]
 pub struct Summoner {
     pub summoner_info: SummonerInfo,
     pub region: String,
     pub ranked_info: SummonerRanked,
+    pub debug_status: u16,
 }
+
 pub type SummonerRanked = Vec<SummonerRankedElement>;
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct SummonerRankedElement {
     pub league_id: String,
