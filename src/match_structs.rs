@@ -341,3 +341,20 @@ pub enum Sprite {
     #[serde(rename = "spell0.png")]
     Spell0Png,
 }
+
+
+pub struct SimpleSummoner {
+    pub summoner_spells: SimpleSpell, 
+    pub summoner: Summoner,
+    pub team_id: i64,
+    pub isVictory: bool,
+}
+
+pub type SimpleSpells = vec<SimpleSpell>;
+
+pub struct SimpleSpell{
+    pub id: i64,
+    pub icon: String,
+    pub name: String,
+    pub description: String,
+}
