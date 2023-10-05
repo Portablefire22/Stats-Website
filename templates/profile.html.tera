@@ -1,5 +1,7 @@
 {% extends "template" %}
+{% block title %}{{summoner.summoner_info.name}} - KittyGoesMeow{% endblock title %}
 {% block body %}
+
 
 <div>
     <div class="profile-header">
@@ -16,22 +18,59 @@
                     <p>Unranked</p>
                 {% endif %}
             </div>
-
         </div>
     </div>
     <div class="profile-content-container">
         <div class="match-history">
             {% for match in match_history %}
-                <div class="match-container">
+                {% for participant in match.info.participants %}
+                    {% if participant.puuid == summoner.summoner_info.puuid %}
+                        {% set_global participant = participant %}
+                    {% endif %}
+                {% endfor %}
+                {% for team in match.info.teams %}
+                    {% if team.teamId == participant.teamId %}
+                        {% set_global participant_team = team %}
+                    {% endif %}
+                {% endfor %}
+            {% if participant_team.win %}
+                {% set_global participant_victory = "victory" %}
+            {% else %}
+                {% set_global participant_victory = "defeat" %}
+            {% endif %}
+            <div class="match-container">
                     <div class="match-content-container">
                         <div class="game-details">
-                            <div class="champion-icon">
-                                <img src="/public/datadragon/13.19.1/img/champion/{{match.info.participants[0].championName}}.png"/>
-                                <label class="champion-level">{{match.info.participants[0].champLevel}}</label>
+                            <div class="{{participant_victory}}">{{match.info.queueType}}</div>
+                            <div>
+                                {% if participant_team.win %}
+                                    <span class="victory">Victory</span>
+                                {% else %}
+                                    <span class="defeat">Defeat</span>
+                                {% endif %}
                             </div>
                         </div>
                         <div class="champion-details">
-
+                            <div class="champion-icon">
+                                <img src="/public/datadragon/13.19.1/img/champion/{{participant.championName}}.png"/>
+                                <label class="champion-level">{{participant.champLevel}}</label>
+                            </div>
+                        </div>
+                        <div class="summoner-spells">
+                            <img class="summoner-spell" src="/public/datadragon/13.19.1/img/spell/{{participant.summoner1Id}}.png"/>
+                            <img class="summoner-spell" src="/public/datadragon/13.19.1/img/spell/{{participant.summoner2Id}}.png"/>
+                        </div>
+                        <div class="rune">
+                            <img>
+                        </div>
+                        <div class="participant-info">
+                            <div class="kda">
+                                <span class="kills">{{participant.kills}}</span>
+                                <span class="kda-separator">/</span>
+                                <span class="deaths">{{participant.deaths}}</span>
+                                <span class="kda-separator">/</span>
+                                <span class="assists">{{participant.assists}}</span>
+                            </div>
                         </div>
                         <div class="items">
 
@@ -40,7 +79,6 @@
 
                         </div>
                     </div>
-                    {{ match.info.participants[0].summonerName }}
                 </div>
             {% endfor %}
         </div>

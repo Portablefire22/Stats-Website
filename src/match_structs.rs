@@ -20,7 +20,7 @@ pub struct MatchInformation {
     pub info: Info,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct Info {
     pub game_creation: i64,
@@ -36,6 +36,7 @@ pub struct Info {
     pub participants: Vec<Participant>,
     pub platform_id: String,
     pub queue_id: i64,
+    pub queue_type: Option<String>,
     pub teams: Vec<Team>,
     pub tournament_code: String,
 }
@@ -116,12 +117,12 @@ pub struct Participant {
     pub physical_damage_dealt: i64,
     pub physical_damage_dealt_to_champions: i64,
     pub physical_damage_taken: i64,
-    pub placement: i64,
-    pub player_augment1: i64,
-    pub player_augment2: i64,
-    pub player_augment3: i64,
-    pub player_augment4: i64,
-    pub player_subteam_id: i64,
+    pub placement: Option<i64>,
+    pub player_augment1: Option<i64>,
+    pub player_augment2: Option<i64>,
+    pub player_augment3: Option<i64>,
+    pub player_augment4: Option<i64>,
+    pub player_subteam_id: Option<i64>,
     pub profile_icon: i64,
     pub push_pings: i64,
     pub puuid: String,
@@ -134,7 +135,7 @@ pub struct Participant {
     pub spell2_casts: i64,
     pub spell3_casts: i64,
     pub spell4_casts: i64,
-    pub subteam_placement: i64,
+    pub subteam_placement: Option<i64>,
     pub summoner1_casts: i64,
     pub summoner1_id: i64,
     pub summoner2_casts: i64,
@@ -253,4 +254,90 @@ pub struct Metadata {
     pub data_version: String,
     pub match_id: String,
     pub participants: Vec<String>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct MatchType {
+    pub queue_id: i64,
+    pub map: String,
+    pub description: Option<String>,
+    pub notes: Option<String>,
+}
+
+
+
+
+// ------------- Summoners -----------------
+
+pub type SummonerSpells = Vec<SummonerSpell>;
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct SummonerSpell {
+    #[serde(rename = "type")]
+    pub summoner_spell_type: String,
+    pub version: String,
+    pub data: HashMap<String, Datum>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Datum {
+    pub id: String,
+    pub name: String,
+    pub description: String,
+    pub tooltip: String,
+    pub maxrank: i64,
+    pub cooldown: Vec<f64>,
+    pub cooldown_burn: String,
+    pub cost: Vec<i64>,
+    pub cost_burn: String,
+    pub datavalues: Datavalues,
+    pub effect: Vec<Option<Vec<f64>>>,
+    pub effect_burn: Vec<Option<String>>,
+    pub vars: Vec<Option<serde_json::Value>>,
+    pub key: String,
+    pub summoner_level: i64,
+    pub modes: Vec<String>,
+    pub cost_type: CostType,
+    pub maxammo: String,
+    pub range: Vec<i64>,
+    pub range_burn: String,
+    pub image: Image,
+    pub resource: CostType,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub enum CostType {
+    #[serde(rename = "&nbsp;")]
+    Nbsp,
+    #[serde(rename = "No Cost")]
+    NoCost,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Datavalues {
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Image {
+    pub full: String,
+    pub sprite: Sprite,
+    pub group: Group,
+    pub x: i64,
+    pub y: i64,
+    pub w: i64,
+    pub h: i64,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum Group {
+    Spell,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub enum Sprite {
+    #[serde(rename = "spell0.png")]
+    Spell0Png,
 }
