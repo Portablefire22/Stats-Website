@@ -28,12 +28,7 @@
                         {% set_global participant = participant %}
                     {% endif %}
                 {% endfor %}
-                {% for team in match.info.teams %}
-                    {% if team.teamId == participant.teamId %}
-                        {% set_global participant_team = team %}
-                    {% endif %}
-                {% endfor %}
-            {% if participant_team.win %}
+            {% if participant.win %}
                 {% set_global participant_victory = "victory" %}
             {% else %}
                 {% set_global participant_victory = "defeat" %}
@@ -43,7 +38,7 @@
                         <div class="game-details">
                             <div class="{{participant_victory}}">{{match.info.queueType}}</div>
                             <div>
-                                {% if participant_team.win %}
+                                {% if participant.win %}
                                     <span class="victory">Victory</span>
                                 {% else %}
                                     <span class="defeat">Defeat</span>
@@ -57,8 +52,9 @@
                             </div>
                         </div>
                         <div class="summoner-spells">
-                            <img class="summoner-spell" src="/public/datadragon/13.19.1/img/spell/{{participant.summoner1Id}}.png"/>
-                            <img class="summoner-spell" src="/public/datadragon/13.19.1/img/spell/{{participant.summoner2Id}}.png"/>
+                            {% set participantId = participant.participantId-1 %}
+                            <img class="summoner-spell" src="/public/datadragon/13.19.1/img/spell/{{match.participant_spells[participantId][0].id}}.png"/>
+                            <img class="summoner-spell" src="/public/datadragon/13.19.1/img/spell/{{match.participant_spells[participantId][1].id}}.png"/>
                         </div>
                         <div class="rune">
                             <img>
@@ -76,7 +72,7 @@
 
                         </div>
                         <div class="participants">
-
+                            {{participant.participantId}}
                         </div>
                     </div>
                 </div>

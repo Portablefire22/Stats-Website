@@ -18,6 +18,8 @@ use std::collections::HashMap;
 pub struct MatchInformation {
     pub metadata: Metadata,
     pub info: Info,
+    #[serde(default)]
+    pub participant_spells: Vec<Vec<Datum>>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Default)]
@@ -270,6 +272,8 @@ pub struct MatchType {
 
 // ------------- Summoners -----------------
 
+pub type ParticipantSpells = Vec<Vec<Datum>>;
+
 pub type SummonerSpells = Vec<SummonerSpell>;
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -280,7 +284,7 @@ pub struct SummonerSpell {
     pub data: HashMap<String, Datum>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Datum {
     pub id: String,
@@ -307,7 +311,7 @@ pub struct Datum {
     pub resource: CostType,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub enum CostType {
     #[serde(rename = "&nbsp;")]
     Nbsp,
@@ -315,11 +319,11 @@ pub enum CostType {
     NoCost,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Datavalues {
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Image {
     pub full: String,
     pub sprite: Sprite,
@@ -330,31 +334,16 @@ pub struct Image {
     pub h: i64,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "snake_case")]
 pub enum Group {
     Spell,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub enum Sprite {
     #[serde(rename = "spell0.png")]
     Spell0Png,
 }
 
 
-pub struct SimpleSummoner {
-    pub summoner_spells: SimpleSpell, 
-    pub summoner: Summoner,
-    pub team_id: i64,
-    pub isVictory: bool,
-}
-
-pub type SimpleSpells = vec<SimpleSpell>;
-
-pub struct SimpleSpell{
-    pub id: i64,
-    pub icon: String,
-    pub name: String,
-    pub description: String,
-}

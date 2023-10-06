@@ -28,7 +28,8 @@ async fn user_profile(region: &str, username: &str) -> Template {
     let local_summoner: api_structs::Summoner = summoner_controller::get_summoner_by_username(region, username).await;
     println!("{:#?}", &local_summoner.summoner_info.profile_icon_id);
     let matches = get_matches(&local_summoner, get_match_history(&local_summoner, 0, 9).await).await;
-    println!("{:#?}", matches[0].info.queue_type);
+    println!("{:#?}", matches[0].participant_spells.len());
+
     Template::render("profile", context! {
         summoner: &local_summoner,
         profile_icon: &local_summoner.summoner_info.profile_icon_id,

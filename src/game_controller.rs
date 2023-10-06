@@ -1,13 +1,15 @@
 // Handle getting game information
 
 
+use std::collections::HashMap;
 use std::env;
 use crate::api_structs::Summoner;
 use crate::{datadragon, match_structs};
-use crate::match_structs::{MatchInformation, MatchType, Participant, SummonerSpell, SummonerSpells};
+use crate::match_structs::{Datum, MatchInformation, MatchType, Participant, ParticipantSpells, SummonerSpell, SummonerSpells};
 use std::fs;
 use std::fs::File;
-use std::io::Read;
+use std::hint::unreachable_unchecked;
+use std::io::{BufReader, Read, Write};
 use serde_json::to_string;
 
 pub async fn get_match_details(local_summoner: &Summoner, game_id: String) -> MatchInformation{
@@ -15,12 +17,19 @@ pub async fn get_match_details(local_summoner: &Summoner, game_id: String) -> Ma
     let request_url: String = format!("https://{}.api.riotgames.com/lol/match/v5/matches/{}?api_key={}",local_summoner.routing_region, game_id, riot_api);
     let mut resp = reqwest::get(request_url).await.expect("Failed to get a response");
     let resp = resp.text().await.expect("Could not parse");
-    let local_match: MatchInformation = serde_json::from_str(&resp).unwrap();
+    let mut local_match: MatchInformation = serde_json::from_str(&resp).unwrap();
+    local_match = get_match_spells(local_match).await;
     let t = format!("{:#?}", local_match);
     fs::write("../test", t).expect("Unable to write to file");
-    let participant: &Participant = get_participant_by_summoner(&local_summoner, &local_match).await;
-    get_spell_by_id(participant.summoner1_id as i8).await;
     return local_match
+}
+
+pub async fn get_match_spells(mut local_match: MatchInformation) -> MatchInformation {
+    for participants in &local_match.info.participants {
+        local_match.participant_spells.push(vec![get_spell_by_id(participants.summoner1_id).await, get_spell_by_id(participants.summoner2_id).await]);
+        println!("Summoner 1 ID: {}, Summoner 2 ID: {}", participants.summoner1_id, participants.summoner2_id);
+    }
+    local_match
 }
 
 pub async fn get_participant_by_summoner<'a>(local_summoner: &Summoner, local_match: &'a MatchInformation) -> &'a Participant {
@@ -63,14 +72,30 @@ pub async fn get_matches(local_summoner: &Summoner, match_ids: Vec<String>) -> V
 }
 
 // p.iter().find(|&x| x.id == 2).is_some()
-pub async fn get_spell_by_id(summoner_spell_id: i8) -> bool {
+pub async fn get_spell_by_id(summoner_spell_id: i64) -> Datum {
     let mut summoner_file = File::open("static/datadragon/13.19.1/data/en_GB/summoner.json").expect("Could not open the summoner spell json file");
     let mut contents = String::new();
     summoner_file.read_to_string(&mut contents).expect("Could not read summoner file to string");
     let summoner_spells: SummonerSpells = serde_json::from_str(&*format!("{}", contents)).expect("Could not convert summoner spell to struct");
-    println!("Summoner spell: {:#?}", summoner_spells[0].data.get(&summoner_spell_id.to_string()).expect("No summoner?"));
-    //assert!(summoner_spells.iter().find(|&x| x.data.get(&summoner_spell_id.to_string()).expect("No summoner?") == 2));
-    false
+    let mut summoner_map;
+    let hashmap_file = File::open("spell_ids.json");
+
+    if hashmap_file.is_err(){
+        summoner_map = HashMap::new();
+        for (key, tmp_spell) in &summoner_spells[0].data {
+            summoner_map.insert(&tmp_spell.key, &tmp_spell.id);
+        }
+        std::mem::drop(hashmap_file);
+        let hashmap_file = File::create("spell_ids.json");
+        serde_json::to_writer(hashmap_file.unwrap(), &summoner_map).expect("Hashmap file for summoner spells does not exist!");
+    }
+    let mut hashmap_file = File::open("spell_ids.json").expect("Hashmap file does not exist, this shouldn't be happening!");
+    let reader = BufReader::new(hashmap_file);
+    let mut hash_json: HashMap<String, String> = serde_json::from_reader(reader).unwrap();
+    //let hash_json: HashMap<&String, &String> = serde_json::from_str().expect("Summoner json not formatted!");
+    let temp_key = hash_json.get(&summoner_spell_id.to_string()).unwrap();
+    println!("Summoner ID: {}", summoner_spell_id);
+    summoner_spells[0].data.get(&String::from(temp_key)).unwrap().clone()
 
 }
 
