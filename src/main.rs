@@ -12,6 +12,7 @@ mod api_structs;
 mod summoner_controller;
 mod game_controller;
 mod match_structs;
+mod rune_structs;
 
 #[macro_use] extern crate rocket;
 use rocket_dyn_templates::{Template, tera::Tera, context};
@@ -26,10 +27,7 @@ use crate::summoner_controller::get_match_history;
 #[get("/<region>/<username>")]
 async fn user_profile(region: &str, username: &str) -> Template {
     let local_summoner: api_structs::Summoner = summoner_controller::get_summoner_by_username(region, username).await;
-    println!("{:#?}", &local_summoner.summoner_info.profile_icon_id);
     let matches = get_matches(&local_summoner, get_match_history(&local_summoner, 0, 9).await).await;
-    println!("{:#?}", matches[0].participant_spells.len());
-
     Template::render("profile", context! {
         summoner: &local_summoner,
         profile_icon: &local_summoner.summoner_info.profile_icon_id,

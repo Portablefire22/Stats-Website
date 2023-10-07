@@ -13,6 +13,7 @@
 
 use serde::{Serialize, Deserialize};
 use std::collections::HashMap;
+use crate::rune_structs::Rune;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct MatchInformation {
@@ -20,6 +21,8 @@ pub struct MatchInformation {
     pub info: Info,
     #[serde(default)]
     pub participant_spells: Vec<Vec<Datum>>,
+    #[serde(default)]
+    pub participant_runes: Vec<Rune>
 }
 
 #[derive(Debug, Serialize, Deserialize, Default)]
