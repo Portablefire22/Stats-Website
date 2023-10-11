@@ -15,6 +15,8 @@ mod summoner_controller;
 mod game_controller;
 mod match_structs;
 mod rune_structs;
+mod item_structs;
+mod item_controller;
 
 #[macro_use] extern crate rocket;
 use rocket_dyn_templates::{Template, tera::Tera, context};
