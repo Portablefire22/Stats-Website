@@ -8,6 +8,7 @@ version = "0.1.0"
 dependencies = [
  "diesel",
  "dotenvy",
+ "lazy_static",
  "once_cell",
  "reqwest",
  "rocket",

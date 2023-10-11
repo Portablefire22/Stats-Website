@@ -205,10 +205,10 @@ form.hide-submit input[type="submit"] {display: none;}
 }
 
 .summoner-spell {
-    width: 22px;
-    height: 22px;
+    width: 30px;
+    height: 30px;
     margin-bottom: 2px;
-    border-radius: 3px;
+    border-radius: 4px;
 }
 
 .keystone {
@@ -253,9 +253,49 @@ form.hide-submit input[type="submit"] {display: none;}
     font-weight: bold;
 }
 
-.items {
-    width: 94px;
+.item-cont {
+    display: flex;
+    align-items: center;
 }
+
+.champ-cont {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.items {
+    position: relative;
+    align-items: center;
+    margin-left: 18px;
+    background-color: #fff;
+    border-radius: 2px;
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    grid-template-rows: repeat(2,1fr);
+    grid-gap: 2px;
+    justify-content: space-between;
+    padding: 2px 2px 2px 2px;
+}
+
+.item {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+}
+
+.trinket-container {
+
+    position: relative;
+    margin-left: 2px;
+}
+
+.trinket {
+    width: 32px;
+    height: 32px;
+    border-radius: 5px;
+}
+
 
 /* Colours
 Main #301A4B

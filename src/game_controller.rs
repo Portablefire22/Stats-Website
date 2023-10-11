@@ -6,6 +6,7 @@ use std::env;
 use crate::api_structs::Summoner;
 use crate::{datadragon, match_structs};
 use crate::match_structs::{Datum, MatchInformation, MatchType, Participant, ParticipantSpells, SummonerSpell, SummonerSpells};
+
 use std::fs;
 use std::fs::File;
 use std::future::join;
@@ -14,7 +15,9 @@ use std::io::{BufReader, Read, Write};
 use rocket::futures::future;
 use serde_json::to_string;
 use syn::ReturnType::Default;
+use crate::item_controller::{create_item_map, get_item_by_id, get_match_items};
 use crate::rune_structs::{RuneElement, RuneClass, Slot, Rune};
+
 
 pub async fn get_match_details(local_summoner: &Summoner, game_id: String) -> MatchInformation{
     let riot_api: String = (env::var("RIOT_API").unwrap()).replace('"', "");
@@ -24,6 +27,7 @@ pub async fn get_match_details(local_summoner: &Summoner, game_id: String) -> Ma
     let mut local_match: MatchInformation = serde_json::from_str(&resp).unwrap();
     local_match = get_match_spells(local_match).await;
     local_match = get_match_runes(local_match).await;
+    local_match = get_match_items(local_match).await;
     let t = format!("{:#?}", local_match);
     fs::write("../test", t).expect("Unable to write to file");
     return local_match
@@ -31,7 +35,7 @@ pub async fn get_match_details(local_summoner: &Summoner, game_id: String) -> Ma
 
 pub async fn get_match_spells(mut local_match: MatchInformation) -> MatchInformation {
     for participants in &local_match.info.participants {
-        local_match.participant_spells.push(vec![get_spell_by_id(participants.summoner1_id).await, get_spell_by_id(participants.summoner2_id).await]);
+        local_match.participant_info.participant_spells.push(vec![get_spell_by_id(participants.summoner1_id).await, get_spell_by_id(participants.summoner2_id).await]);
     }
     local_match
 }
@@ -102,9 +106,12 @@ pub async fn get_spell_by_id(summoner_spell_id: i64) -> Datum {
 
 pub async fn get_match_runes(mut local_match: MatchInformation) -> MatchInformation {
     //get_rune_by_id(8124).await;
-    for participant in &local_match.info.participants {
-        local_match.participant_runes.push(build_runes(participant).await);
+    for (i,participant) in local_match.info.participants.iter().enumerate() {
+        local_match.participant_info.participant_runes.push(build_runes(participant).await);
+        //println!("{:#?}", local_match.participant_info.participant_runes);
+
     }
+
     return local_match
 }
 
@@ -118,13 +125,19 @@ pub async fn build_runes(participant: &Participant) -> RuneElement{
     // Subrunes being the two secondary
 
     // The style in i64 is the rune tree
+    println!("---------{}:{}---------", participant.participant_id, participant.summoner_name);
     let mut rune_construct = tree_map.get(&participant.perks.styles[0].style).expect("Cant find a rune tree with the specified id! (This shouldn't be possible! Is datadragon up to date?)").clone();
+    rune_construct.slots = vec!();
     for (i, class) in participant.perks.styles.iter().enumerate() {
         rune_construct.slots.push(Slot{ runes: vec![] });
         for rune in &class.selections {
-             rune_construct.slots[i].runes.push(get_rune_by_id(rune.perk, &rune_map).await);
+            let test = get_rune_by_id(rune.perk, &rune_map).await;
+            rune_construct.slots[i].runes.push(test.clone());
+            //println!("{:#?}", test);
+            //println!("========");
         }
     }
+
     return rune_construct
 }
 

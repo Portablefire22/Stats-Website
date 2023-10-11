@@ -45,19 +45,21 @@
                                 {% endif %}
                             </div>
                         </div>
-                        <div class="champion-details">
-                            <div class="champion-icon">
-                                <img src="/public/datadragon/13.19.1/img/champion/{{participant.championName}}.png"/>
-                                <label class="champion-level">{{participant.champLevel}}</label>
+                        <div class="champ-cont">
+                            <div class="champion-details">
+                                <div class="champion-icon">
+                                    <img src="/public/datadragon/13.19.1/img/champion/{{participant.championName}}.png"/>
+                                    <label class="champion-level">{{participant.champLevel}}</label>
+                                </div>
                             </div>
-                        </div>
-                        <div class="summoner-spells">
-                            {% set participantId = participant.participantId-1 %}
-                            <img class="summoner-spell" src="/public/datadragon/13.19.1/img/spell/{{match.participant_spells[participantId][0].id}}.png"/>
-                            <img class="summoner-spell" src="/public/datadragon/13.19.1/img/spell/{{match.participant_spells[participantId][1].id}}.png"/>
-                        </div>
-                        <div class="rune">
-                            <img class="keystone" src="/public/datadragon/img/{{match.participant_runes[participantId].slots[0].runes[0].icon}}"/>
+                            <div class="summoner-spells">
+                                {% set participantId = participant.participantId-1 %}
+                                <img class="summoner-spell" src="/public/datadragon/13.19.1/img/spell/{{match.participant_info.participant_spells[participantId][0].id}}.png"/>
+                                <img class="summoner-spell" src="/public/datadragon/13.19.1/img/spell/{{match.participant_info.participant_spells[participantId][1].id}}.png"/>
+                            </div>
+                            <div class="rune">
+                                <img class="keystone" src="/public/datadragon/img/{{match.participant_info.participant_runes[participantId].slots[0].runes[0].icon}}"/>
+                            </div>
                         </div>
                         <div class="participant-info">
                             <div class="kda">
@@ -68,8 +70,25 @@
                                 <span class="assists">{{participant.assists}}</span>
                             </div>
                         </div>
-                        <div class="items">
-                            {% for item in participant.%}
+                        <div class="item-cont">
+                            <div class="items">
+                                {% for item in match.participant_info.participant_items[participantId] %}
+                                {% if "Trinket" not in item.tags and not loop.last %}
+                                {% if item.id == 0 %}
+                                <img class="item" src="/public/blank.png"/>
+                                {% else %}
+                                <img class="item" src="/public/datadragon/13.19.1/img/item/{{item.id}}.png"/>
+                                {% endif %}
+                                {% endif%}
+                                {% endfor %}
+                            </div>
+                            <div class="trinket-container">
+                                {% if match.participant_info.participant_items[participantId][6].id == 0 %}
+                                <img class="item" src="/public/datadragon/13.19.1/img/item/2052.png"/>
+                                {% else %}
+                                <img class="trinket" src="/public/datadragon/13.19.1/img/item/{{match.participant_info.participant_items[participantId][6].id}}.png"/>
+                                {% endif %}
+                            </div>
                         </div>
                         <div class="participants">
                         </div>

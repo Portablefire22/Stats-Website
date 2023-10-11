@@ -13,6 +13,7 @@
 
 use serde::{Serialize, Deserialize};
 use std::collections::HashMap;
+use crate::item_structs;
 use crate::rune_structs::RuneElement;
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -20,9 +21,18 @@ pub struct MatchInformation {
     pub metadata: Metadata,
     pub info: Info,
     #[serde(default)]
+    pub participant_info: ParticipantInfo,
+}
+
+// Contains arrays for all participant details, kinda hacky but idk a better method without making a million get requests to the server
+#[derive(Debug, Serialize, Deserialize, Default)]
+pub struct ParticipantInfo {
+    #[serde(default)]
     pub participant_spells: Vec<Vec<Datum>>,
     #[serde(default)]
-    pub participant_runes: Vec<RuneElement>
+    pub participant_runes: Vec<RuneElement>,
+    #[serde(default)]
+    pub participant_items: Vec<Vec<item_structs::Datum>>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Default)]
