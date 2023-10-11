@@ -8,10 +8,13 @@ use crate::{datadragon, match_structs};
 use crate::match_structs::{Datum, MatchInformation, MatchType, Participant, ParticipantSpells, SummonerSpell, SummonerSpells};
 use std::fs;
 use std::fs::File;
+use std::future::join;
 use std::hint::unreachable_unchecked;
 use std::io::{BufReader, Read, Write};
+use rocket::futures::future;
 use serde_json::to_string;
-use crate::rune_structs::{Rune, RuneClass, RuneElement};
+use syn::ReturnType::Default;
+use crate::rune_structs::{RuneElement, RuneClass, Slot, Rune};
 
 pub async fn get_match_details(local_summoner: &Summoner, game_id: String) -> MatchInformation{
     let riot_api: String = (env::var("RIOT_API").unwrap()).replace('"', "");
@@ -80,7 +83,6 @@ pub async fn get_spell_by_id(summoner_spell_id: i64) -> Datum {
     let summoner_spells: SummonerSpells = serde_json::from_str(&*format!("{}", contents)).expect("Could not convert summoner spell to struct");
     let mut summoner_map;
     let hashmap_file = File::open("hashmaps/spell_ids.json");
-
     if hashmap_file.is_err(){
         summoner_map = HashMap::new();
         for (key, tmp_spell) in &summoner_spells[0].data {
@@ -98,23 +100,41 @@ pub async fn get_spell_by_id(summoner_spell_id: i64) -> Datum {
     summoner_spells[0].data.get(&String::from(temp_key)).unwrap().clone()
 }
 
-pub async fn get_match_runes(local_match: MatchInformation) -> MatchInformation {
+pub async fn get_match_runes(mut local_match: MatchInformation) -> MatchInformation {
     //get_rune_by_id(8124).await;
-    create_rune_map().await;
-    panic!();
-}
-pub async fn get_rune_by_id(rune_id: i64) -> Rune {
-    // Make sure the actual hashmap exists tbh
-    let (rune_map, sub_map) = create_rune_map().await;
-    // Quick and dirty check to see if it's a sub rune
-    if rune_id.to_string()[2..3] == String::from("00") {
-        // Not a sub rune
-        let rune = rune_map.get(&rune_id).expect(&*format!("Failed to get a rune of id: {}", rune_id)).clone();
-    } else { // Complete this
-
+    for participant in &local_match.info.participants {
+        local_match.participant_runes.push(build_runes(participant).await);
     }
-    panic!();
+    return local_match
 }
+
+pub async fn build_runes(participant: &Participant) -> RuneElement{
+    let (tree_map, rune_map) = create_rune_map().await;
+    // To build the rune we must first have the rune tree
+
+    // Runes are a vector so
+    // [Main Runes, Sub runes]
+    // Main runes being from the main tree
+    // Subrunes being the two secondary
+
+    // The style in i64 is the rune tree
+    let mut rune_construct = tree_map.get(&participant.perks.styles[0].style).expect("Cant find a rune tree with the specified id! (This shouldn't be possible! Is datadragon up to date?)").clone();
+    for (i, class) in participant.perks.styles.iter().enumerate() {
+        rune_construct.slots.push(Slot{ runes: vec![] });
+        for rune in &class.selections {
+             rune_construct.slots[i].runes.push(get_rune_by_id(rune.perk, &rune_map).await);
+        }
+    }
+    return rune_construct
+}
+
+
+// Looks kinda useless but idk though, might be expanded in the future
+pub async fn get_rune_by_id(rune_id: i64, rune_map: &HashMap<i64, RuneClass>) -> RuneClass {
+    let rune = rune_map.get(&rune_id).expect(&*format!("Failed to get a rune of id: {}", rune_id)).clone();
+    return rune;
+}
+
 
 pub async fn create_rune_map() -> (HashMap<i64, RuneElement>,HashMap<i64, RuneClass>) {
     let mut rune_file = File::open("static/datadragon/13.19.1/data/en_GB/runesReforged.json").expect("Could not open the rune json file");
@@ -133,8 +153,9 @@ pub async fn create_rune_map() -> (HashMap<i64, RuneElement>,HashMap<i64, RuneCl
             println!("{:?}", rune);
             rune_map.insert(rune.id, rune.clone());
             for slot in rune.slots{
-                for subrune in slot.runes {
-                        subrune_map.insert(subrune.id, subrune);
+                for mut subrune in slot.runes {
+                    subrune.rune_tree = rune.key.clone();
+                    subrune_map.insert(subrune.id, subrune);
                 }
             }
         }
@@ -147,10 +168,10 @@ pub async fn create_rune_map() -> (HashMap<i64, RuneElement>,HashMap<i64, RuneCl
     }
     let mut rune_hashmap_file = File::open("hashmaps/runes.json").expect("Hashmap file does not exist, this shouldn't be happening!");
     let reader = BufReader::new(rune_hashmap_file);
-    let mut hash_json: HashMap<i64, RuneElement> = serde_json::from_reader(reader).unwrap();
-    let mut subrune_hashmap_file = File::open("hashmaps/subrunes.json.json").expect("Hashmap file does not exist, this shouldn't be happening!");
+    let mut runepath_json: HashMap<i64, RuneElement> = serde_json::from_reader(reader).unwrap();
+    let mut subrune_hashmap_file = File::open("hashmaps/subrunes.json").expect("Hashmap file does not exist, this shouldn't be happening!");
     let sub_reader = BufReader::new(subrune_hashmap_file);
-    let mut sub_hash_json: HashMap<i64, RuneClass> = serde_json::from_reader(sub_reader).unwrap();
-    (hash_json, sub_hash_json)
+    let mut rune_info_json: HashMap<i64, RuneClass> = serde_json::from_reader(sub_reader).unwrap();
+    (runepath_json, rune_info_json)
 
 }

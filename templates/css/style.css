@@ -211,6 +211,14 @@ form.hide-submit input[type="submit"] {display: none;}
     border-radius: 3px;
 }
 
+.keystone {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 2px;
+    border-radius: 3px;
+}
+
+
 .participant-info{
     display: flex;
     flex-direction: column;

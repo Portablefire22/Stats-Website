@@ -1,3 +1,5 @@
+#![feature(future_join)]
+
 use std::env;
 use std::path::{Path, PathBuf};
 use dotenvy::dotenv;

@@ -57,7 +57,7 @@
                             <img class="summoner-spell" src="/public/datadragon/13.19.1/img/spell/{{match.participant_spells[participantId][1].id}}.png"/>
                         </div>
                         <div class="rune">
-                            <img class="keystone" src="/public/datadragon/{{participant.perks.styles[0]}}"/>
+                            <img class="keystone" src="/public/datadragon/img/{{match.participant_runes[participantId].slots[0].runes[0].icon}}"/>
                         </div>
                         <div class="participant-info">
                             <div class="kda">
