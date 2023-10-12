@@ -140,6 +140,7 @@ form.hide-submit input[type="submit"] {display: none;}
     width: 100%;
     padding: 12px 0px 12px 0px;
     border-radius: 12px;
+    margin-bottom:10%;
 }
 
 .match-container {
