@@ -91,7 +91,32 @@
                             </div>
                         </div>
                         <div class="participants">
+                            <div class="teamone">
+                                {% for participant in match.info.participants %}
+                                    {% if participant.teamId == 100 %}
+                                        <div class="participant">
+                                            <div class="participant-champ-icon">
+                                                <img src="/public/datadragon/13.19.1/img/champion/{{participant.championName}}.png"/>
+                                            </div>
+                                            <a class="participant-name" href="./{{participant.summonerName}}">{{participant.summonerName}}</a>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <div class="teamtwo">
+                                {% for participant in match.info.participants %}
+                                    {% if participant.teamId == 200 %}
+                                        <div class="participant">
+                                            <div class="participant-champ-icon">
+                                                <img src="/public/datadragon/13.19.1/img/champion/{{participant.championName}}.png"/>
+                                            </div>
+                                            <a class="participant-name" href="./{{participant.summonerName}}">{{participant.summonerName}}</a>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
                         </div>
+
                     </div>
                 </div>
             {% endfor %}

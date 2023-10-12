@@ -268,7 +268,6 @@ form.hide-submit input[type="submit"] {display: none;}
     position: relative;
     align-items: center;
     margin-left: 18px;
-    background-color: #fff;
     border-radius: 2px;
     display: grid;
     grid-template-columns: repeat(3,1fr);
@@ -296,6 +295,59 @@ form.hide-submit input[type="submit"] {display: none;}
     border-radius: 5px;
 }
 
+.participants {
+    display: flex;
+    width: 200px;
+    height: 90px;
+}
+
+.participant {
+    max-width: 90px;
+    display: flex;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-bottom: 2px;
+}
+
+.participant a {
+    display:block;
+    text-decoration: none;
+    color: black;
+}
+
+.participant-name {
+    font-size: 11px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: block;
+    max-width: 70px;
+}
+
+.teamone {
+    width: 100px;
+    display: grid;
+}
+
+.teamtwo {
+    width: 100px;
+    display: grid;
+}
+
+.participant-champ-icon {
+    width: 16px;
+    height: 16px;
+    overflow: hidden;
+
+    border-radius: 4px;
+    margin-right: 4px;
+}
+
+.participant img{
+    width: 16px;
+    height: 16px;
+    overflow: hidden;
+    transform: scale(1.15);
+}
 
 /* Colours
 Main #301A4B

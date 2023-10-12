@@ -4,14 +4,14 @@ use rocket::http::uri::{Absolute, Origin, Uri};
 use serde_json::from_str;
 use crate::api_structs;
 use crate::api_structs::Summoner;
+use urlencoding::encode;
 use crate::game_controller::get_match_details;
 
 // Get the summoner information
 pub(crate) async fn get_summoner_by_username(region: &str, username: &str) -> Summoner {
     let riot_api: String = (env::var("RIOT_API").unwrap()).replace('"', "");
-
-    let mut request_url: String = format!("https://{}.api.riotgames.com/lol/summoner/v4/summoners/by-name/{}?api_key={}",region, username, &riot_api);
-    let request_url: Uri = Uri::parse::<Absolute>(&*request_url).expect("Failed to parse");
+    let safe_username = encode(username);
+    let mut request_url: String = format!("https://{}.api.riotgames.com/lol/summoner/v4/summoners/by-name/{}?api_key={}",region, safe_username, &riot_api);
     let mut resp = reqwest::get(request_url.to_string()).await.expect("Failed to get a response");
     let status :StatusCode = resp.status();
     println!("{:#?}", status);
