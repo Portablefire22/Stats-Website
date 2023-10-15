@@ -52,6 +52,7 @@ pub async fn get_participant_by_summoner<'a>(local_summoner: &Summoner, local_ma
 pub async fn get_matches(local_summoner: &Summoner, match_ids: Vec<String>) -> Vec<MatchInformation> {
     let mut matches: Vec<MatchInformation> = Vec::new();
     for match_id in match_ids {
+        println!("{:#?}", &match_id);
         let mut local_match = get_match_details(local_summoner, match_id).await;
         local_match.info.queue_type = Option::from(match local_match.info.queue_id {
             0 => "Custom",
@@ -72,6 +73,7 @@ pub async fn get_matches(local_summoner: &Summoner, match_ids: Vec<String>) -> V
             900 => "ARURF",
             _ => "Unknown"
         }.parse::<String>().unwrap());
+
         matches.push(local_match);
     }
     let t = format!("{:#?}", matches);

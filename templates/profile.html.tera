@@ -27,7 +27,7 @@
                     <div class="rank-queuetype">
                         {% if summoner.ranked_info[0].queueType == "RANKED_SOLO_5x5" %}
                             Ranked Solo/Duo
-                        {% else %}}
+                        {% else %}
                             Ranked Flex
                         {% endif %}
                     </div>
@@ -35,7 +35,6 @@
                         <div class="rank-icon-img">
                             <img src="/public/datadragon/13.19.1/img/tft-regalia/TFT_Regalia_{{summoner.ranked_info[0].tier | capitalize }}.png" onerror="this.onerror=null; this.src='/public/datadragon/13.19.1/img/tft-regalia/TFT_Regalia_Provisional.png'">
                         </div>
-
                         <p>{{summoner.ranked_info[0].tier | capitalize }}{% if summoner.ranked_info[0].tier != "CHALLENGER" %} {{summoner.ranked_info[0].rank}} {% endif %}<br><small>{{summoner.ranked_info[0].leaguePoints}} LP</small></p>
                     </div>
                 </div>
@@ -56,7 +55,7 @@
             {% else %}
                 {% set_global participant_victory = "defeat" %}
             {% endif %}
-            <div class="match-container">
+            <div onclick="location.href='/match/{{region}}/{{match.metadata.matchId}}?summoner={{participant.summonerName}}';" class="match-container">
                     <div class="match-content-container">
                         <div class="game-details">
                             <div class="{{participant_victory}}">{{match.info.queueType}}</div>

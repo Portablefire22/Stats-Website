@@ -17,12 +17,16 @@ mod match_structs;
 mod rune_structs;
 mod item_structs;
 mod item_controller;
+mod analyse_summoner;
+mod timeline_structs;
+
 
 #[macro_use] extern crate rocket;
 use rocket_dyn_templates::{Template, tera::Tera, context};
+use crate::analyse_summoner::match_analysis;
 use crate::game_controller::get_matches;
 use crate::summoner_controller::get_match_history;
-
+use crate::timeline_structs::Timeline;
 
 // ------- Summoner Searching
 
@@ -36,8 +40,17 @@ async fn user_profile(region: &str, username: &str) -> Template {
         summoner: &local_summoner,
         profile_icon: &local_summoner.summoner_info.profile_icon_id,
         summoner_level: &local_summoner.summoner_info.summoner_level,
-        match_history: matches
+        match_history: matches,
+        region: region,
     })
+}
+
+#[get("/<region>/<match_id>?<summoner_name..>")]
+async fn match_showcase(region: &str, match_id: &str, summoner_name: &str) -> String {
+    dbg!(region, match_id, summoner_name);
+    let local_summoner: api_structs::Summoner = summoner_controller::get_summoner_by_username(region, summoner_name).await;
+    let mat = match_analysis(match_id, local_summoner).await;
+    format!("{:#?}", mat)
 }
 
 #[derive(FromForm)]
@@ -62,6 +75,7 @@ fn rocket() -> _ {
         .mount("/", routes![index])
         .mount("/search/", routes![user_profile, search_input])
         .mount("/css/", routes![stylesheet])
+        .mount("/match/", routes![match_showcase])
         .mount("/public", FileServer::from("static/"))
         .attach(Template::fairing())
 
