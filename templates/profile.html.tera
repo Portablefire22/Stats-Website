@@ -3,7 +3,7 @@
 {% block body %}
 
 
-<div>
+<div class="cont">
     <div class="profile-header">
         <div class="header-content">
             <div class="profile-icon">
@@ -13,7 +13,7 @@
             <div class="profile-text">
                 <h1> {{summoner.summoner_info.name}}</h1>
                 {% if summoner.ranked_info[0].rank %}
-                    <p>{{summoner.ranked_info[0].tier}} {{summoner.ranked_info[0].rank}}</p>
+                    <p>{{summoner.ranked_info[0].tier}} {% if summoner.ranked_info[0].tier != "CHALLENGER" %} {{summoner.ranked_info[0].rank}} {% endif %}</p>
                 {% else %}
                     <p>Unranked</p>
                 {% endif %}
@@ -21,6 +21,29 @@
         </div>
     </div>
     <div class="profile-content-container">
+        <div class="ranked">
+            <div class="ranked-info">
+                <div class="ranked-content">
+                    <div class="rank-queuetype">
+                        {% if summoner.ranked_info[0].queueType == "RANKED_SOLO_5x5" %}
+                            Ranked Solo/Duo
+                        {% else %}}
+                            Ranked Flex
+                        {% endif %}
+                    </div>
+                    <div class="rank-info-cont">
+                        <div class="rank-icon-img">
+                            <img src="/public/datadragon/13.19.1/img/tft-regalia/TFT_Regalia_{{summoner.ranked_info[0].tier | capitalize }}.png" onerror="this.onerror=null; this.src='/public/datadragon/13.19.1/img/tft-regalia/TFT_Regalia_Provisional.png'">
+                        </div>
+
+                        <p>{{summoner.ranked_info[0].tier | capitalize }}{% if summoner.ranked_info[0].tier != "CHALLENGER" %} {{summoner.ranked_info[0].rank}} {% endif %}<br><small>{{summoner.ranked_info[0].leaguePoints}} LP</small></p>
+                    </div>
+                </div>
+                <div class="ranked-graph">
+                    <p></p>
+                </div>
+            </div>
+        </div>
         <div class="match-history">
             {% for match in match_history %}
                 {% for participant in match.info.participants %}
@@ -116,7 +139,6 @@
                                 {% endfor %}
                             </div>
                         </div>
-
                     </div>
                 </div>
             {% endfor %}

@@ -8,6 +8,11 @@
     {% endblock head %}
 </head>
 <body>
+    <div class="navbar">
+        {% block navbar %}
+        <a href="/">KittyGoesMeow</a>
+        {% endblock navbar %}
+    </div>
     {% block body %}
     {% endblock body %}
     <div class="footer">
