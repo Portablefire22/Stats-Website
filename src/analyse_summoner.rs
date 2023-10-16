@@ -3,8 +3,8 @@ use crate::api_structs::Summoner;
 use crate::timeline_structs::{Frame, Participant, Timeline};
 
 
-pub async fn match_analysis(match_id: &str, focused_summoner: Summoner) -> Timeline {
-    let timeline: Timeline = get_match_timeline(match_id, &focused_summoner).await;
+pub async fn match_analysis(match_id: &str, focused_summoner: &Summoner) -> Timeline {
+    let timeline: Timeline = get_match_timeline(match_id, focused_summoner).await;
     let mut focused_id = 64;
     for participant in &timeline.info.participants {
         if participant.puuid == focused_summoner.summoner_info.puuid {
@@ -28,7 +28,7 @@ pub fn analyse_cs(frames: &Vec<Frame>, focused_summoner: &Summoner, focused_id: 
         // Never going to be cs at the start of a game
         if i > 0 {
             let cs_min: f64 = minions as f64 / i as f64;
-            println!("{}, {:.1}/m", minions, cs_min);
+            println!("Minute: {} CS: {}, {:.1}/m", i, minions, cs_min);
             cs_per_minute.push(cs_min);
         }
     }

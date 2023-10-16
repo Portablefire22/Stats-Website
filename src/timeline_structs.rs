@@ -80,6 +80,8 @@ pub enum KillType {
 pub enum LevelUpType {
     #[serde(rename = "NORMAL")]
     Normal,
+    #[serde(rename = "EVOLVE")]
+    Evolve,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

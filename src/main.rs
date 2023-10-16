@@ -23,6 +23,7 @@ mod timeline_structs;
 
 #[macro_use] extern crate rocket;
 use rocket_dyn_templates::{Template, tera::Tera, context};
+use urlencoding::encode;
 use crate::analyse_summoner::match_analysis;
 use crate::game_controller::get_matches;
 use crate::summoner_controller::get_match_history;
@@ -35,7 +36,7 @@ use crate::timeline_structs::Timeline;
 #[get("/<region>/<username>")]
 async fn user_profile(region: &str, username: &str) -> Template {
     let local_summoner: api_structs::Summoner = summoner_controller::get_summoner_by_username(region, username).await;
-    let matches = get_matches(&local_summoner, get_match_history(&local_summoner, 0, 9).await).await;
+    let matches = get_matches(&local_summoner, get_match_history(&local_summoner, 0, 20).await).await;
     Template::render("profile", context! {
         summoner: &local_summoner,
         profile_icon: &local_summoner.summoner_info.profile_icon_id,
@@ -46,11 +47,14 @@ async fn user_profile(region: &str, username: &str) -> Template {
 }
 
 #[get("/<region>/<match_id>?<summoner_name..>")]
-async fn match_showcase(region: &str, match_id: &str, summoner_name: &str) -> String {
+async fn match_showcase(region: &str, match_id: &str, summoner_name: &str) -> Template {
     dbg!(region, match_id, summoner_name);
     let local_summoner: api_structs::Summoner = summoner_controller::get_summoner_by_username(region, summoner_name).await;
-    let mat = match_analysis(match_id, local_summoner).await;
-    format!("{:#?}", mat)
+    let mat = match_analysis(match_id, &local_summoner).await;
+    Template::render("match", context!{
+        focused_summoner: &local_summoner,
+        match_id: match_id,
+    })
 }
 
 #[derive(FromForm)]
@@ -60,7 +64,7 @@ struct SearchSummoner {
 }
 #[post("/", data="<summoner_info>")]
 async fn search_input(summoner_info: rocket::form::Form<SearchSummoner>) -> Redirect {
-    let safe_username: String = summoner_info.username.replace(" ", "%20");
+    let safe_username = encode(&*summoner_info.username);
     let url: String = format!("/search/{}/{}", summoner_info.region, safe_username);
     Redirect::to(url)
 }

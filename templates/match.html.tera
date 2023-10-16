@@ -1,0 +1,9 @@
+{% extends "template" %}
+{% block title %}{{match_id}} - KittyGoesMeow{% endblock title %}
+{% block body %}
+<script src="https://code.highcharts.com/highcharts.js"></script>
+
+<div class="cont">
+
+</div>
+{% endblock body %}
