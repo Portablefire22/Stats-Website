@@ -25,14 +25,13 @@ pub fn analyse_cs(frames: &Vec<Frame>, focused_summoner: &Summoner, focused_id: 
         // Participant frames start from one
         let participant_frame = frame.participant_frames.get(&*format!("{}",focused_id)).expect(&*format!("Could not find a participant by the id: {}", focused_id));
         let minions = participant_frame.minions_killed;
+        // Never going to be cs at the start of a game
         if i > 0 {
             let cs_min: f64 = minions as f64 / i as f64;
             println!("{}, {:.1}/m", minions, cs_min);
-
             cs_per_minute.push(cs_min);
         }
     }
-    dbg!(cs_per_minute);
 }
 
 pub fn get_frames(timeline: &Timeline) -> Vec<Frame> {
@@ -43,7 +42,6 @@ pub async fn get_match_timeline(match_id: &str, local_summoner: &Summoner) -> Ti
     let request_url: String = format!("https://{}.api.riotgames.com/lol/match/v5/matches/{}/timeline?api_key={}",local_summoner.routing_region, match_id, riot_api);
     let mut resp = reqwest::get(request_url).await.expect("Failed to get a response");
     let resp = resp.text().await.expect("Could not parse");
-
     serde_json::from_str(&resp).unwrap()
 }
 
