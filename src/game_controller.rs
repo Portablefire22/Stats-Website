@@ -83,6 +83,7 @@ pub async fn get_matches(local_summoner: &Summoner, match_ids: Vec<String>) -> V
 
 // p.iter().find(|&x| x.id == 2).is_some()
 pub async fn get_spell_by_id(summoner_spell_id: i64) -> Datum {
+    fs::create_dir_all("hashmaps/").expect("Could not create hashmap dir");
     let mut summoner_file = File::open("static/datadragon/13.19.1/data/en_GB/summoner.json").expect("Could not open the summoner spell json file");
     let mut contents = String::new();
     summoner_file.read_to_string(&mut contents).expect("Could not read summoner file to string");
@@ -152,6 +153,7 @@ pub async fn get_rune_by_id(rune_id: i64, rune_map: &HashMap<i64, RuneClass>) ->
 
 
 pub async fn create_rune_map() -> (HashMap<i64, RuneElement>,HashMap<i64, RuneClass>) {
+    fs::create_dir_all("hashmaps/").expect("Could not createhashmap dir");
     let mut rune_file = File::open("static/datadragon/13.19.1/data/en_GB/runesReforged.json").expect("Could not open the rune json file");
     let mut contents = String::new();
     rune_file.read_to_string(&mut contents).expect("Could not read rune file to string");

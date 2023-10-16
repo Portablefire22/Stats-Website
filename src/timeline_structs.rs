@@ -111,6 +111,8 @@ pub enum VictimDamageDealtType {
     Other,
     #[serde(rename = "TOWER")]
     Tower,
+    #[serde(rename = "MONSTER")]
+    Monster,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

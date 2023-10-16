@@ -1,3 +1,4 @@
+use std::fs;
 use std::fs::File;
 use std::io::Write;
 use lazy_static::lazy_static;
@@ -7,7 +8,9 @@ use crate::match_structs::MatchInformation;
 
 lazy_static! {
     #[derive(Debug)]
-    static ref ITEMS: Item = serde_json::from_str(include_str!("/home/blakey/RustroverProjects/LeagueOfLegendsStatsSite/static/datadragon/13.19.1/data/en_GB/item.json")).expect("Could not open the item json file");
+    //static ref ITEMS: Item = serde_json::from_str(include_str!("./static/datadragon/13.19.1/data/en_GB/item.json")).expect("Could not open the item json file");
+    static ref ITEMS: Item = serde_json::from_str(include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/static/datadragon/13.19.1/data/en_GB/item.json"))).expect("Could not open the item json file");
+
 }
 
 
@@ -55,7 +58,7 @@ pub async fn get_item_by_id(item_id: i64) -> Datum {
 // GOOD NEWS!
 // Dont need to do this :D
 pub async fn create_item_map() {
-
+    fs::create_dir_all("debugfile/").expect("Could not create debug file dir");
     let mut test = File::create("debugfile/test").unwrap();
     File::write(&mut test, format!("{:#?}", &*ITEMS).as_ref());
     println!("{:#?}", &*ITEMS);
