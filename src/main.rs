@@ -36,7 +36,7 @@ use crate::timeline_structs::Timeline;
 #[get("/<region>/<username>")]
 async fn user_profile(region: &str, username: &str) -> Template {
     let local_summoner: api_structs::Summoner = summoner_controller::get_summoner_by_username(region, username).await;
-    let matches = get_matches(&local_summoner, get_match_history(&local_summoner, 0, 20).await).await;
+    let matches = get_matches(&local_summoner, get_match_history(&local_summoner, 0, 2).await).await;
     Template::render("profile", context! {
         summoner: &local_summoner,
         profile_icon: &local_summoner.summoner_info.profile_icon_id,

@@ -25,7 +25,6 @@ pub async fn get_match_items(mut local_match: MatchInformation) -> MatchInformat
     for participant in &local_match.info.participants {
         let mut items: Vec<Datum> = Vec::new();
         // Hehe >:3
-
         items.push(get_item_by_id(participant.item0).await);
         items.push(get_item_by_id(participant.item1).await);
         items.push(get_item_by_id(participant.item2).await);

@@ -18,6 +18,9 @@
                     <p>Unranked</p>
                 {% endif %}
             </div>
+            <div class="update">
+                <button type="button">Update</button>
+            </div>
         </div>
     </div>
     <div class="profile-content-container">
